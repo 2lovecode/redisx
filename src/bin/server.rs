@@ -45,6 +45,7 @@ async fn process(socket: TcpStream, db : Db) {
                         let shard = db[hash_value as usize % SHARE_NUM].lock().unwrap();
                         match shard.get(cmd.key()) {
                             Some(value) => {
+                                println!("{:?}", value);
                                 Frame::Bulk(value.clone().into())
                             },
                             None => {
@@ -62,9 +63,11 @@ async fn process(socket: TcpStream, db : Db) {
                     Ok(hash_value) => {
                         let mut shard = db[hash_value as usize % SHARE_NUM].lock().unwrap();
                         shard.insert(cmd.key().to_string(), cmd.value().clone());
+                        println!("a");
                         Frame::Simple("OK".to_string())
                     },
-                    Err(_) => {
+                    Err(e) => {
+                        println!("{:?}", e);
                         Frame::Simple("OK".to_string())
                     },
                 }
@@ -78,8 +81,7 @@ async fn process(socket: TcpStream, db : Db) {
 
 
 fn string_to_int_hash(s: &str) -> Result<u64, std::num::ParseIntError> {
-    let num: i32 = s.parse()?;
     let mut hasher = DefaultHasher::new();
-    num.hash(&mut hasher);
+    s.hash(&mut hasher);
     Ok(hasher.finish())
 }
