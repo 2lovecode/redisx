@@ -16,7 +16,7 @@ enum Command {
     },
 }
 
-type Responder<T> = oneshot::Sender<Option<mini_redis::Result<T>>>;
+type Responder<T> = oneshot::Sender<Option<Result<T>>>;
 
 #[tokio::main]
 async fn main() {
