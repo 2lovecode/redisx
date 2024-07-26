@@ -11,7 +11,7 @@ async fn main() -> Result<()> {
     println!("got value from the server; result={:?}", result);
 
     let op = say_hello();
-
+  
     op.await;
 
     Ok(())
